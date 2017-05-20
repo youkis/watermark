@@ -28,8 +28,6 @@ PyObject *mls(PyObject *self, PyObject *args){
 			for(int k=0;k<N-1;k++){
 				lfsr=(lfsr>>1)^(-(int)(lfsr&1) & f);
 				PyList_SET_ITEM(mseq,k,(lfsr&1)?Py_True:Py_False);
-				//if(lfsr&1) PyList_SET_ITEM(mseq,k,Py_True);
-				//else       PyList_SET_ITEM(mseq,k,Py_False);
 			}
 			return Py_BuildValue("O", mseq);
 			//PyList_Append((PyObject*)mseqs,(PyObject*)mseq);
@@ -39,14 +37,16 @@ PyObject *mls(PyObject *self, PyObject *args){
 	//return (PyObject*)mseqs;
 }
 
-PyObject *ccc(PyObject *self, PyObject *args){
-	int seed,N,i,j,k;
-	if(!PyArg_ParseTuple(args,"ii",&seed,&N)) return NULL;
+PyObject *ccc(PyObject *self, PyObject *args, PyObject* keywds) {
+	int seed=123456,N;
+  PyObject* eList = NULL;
+	static char* kwlist[] = {"N","seed",NULL};
+	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|i",kwlist,&N,&eList,&seed)) return NULL;
 	char ***CCC=generateCCC(seed,N);
 	PyObject *c=PyList_New(N*N),*cc=PyList_New(N),*ccc=PyList_New(N);
-	for(i=0;i<N;i++){
-		for (j=0;j<N;j++){
-			for (k=0;k<N*N;k++) PyList_SET_ITEM(c,k,Py_BuildValue("i",CCC[i][j][k]));
+	for(int i=0;i<N;i++){
+		for (int j=0;j<N;j++){
+			for (int k=0;k<N*N;k++) PyList_SET_ITEM(c,k,Py_BuildValue("i",CCC[i][j][k]));
 			PyList_SET_ITEM(cc,j,c);
 		}
 		PyList_SET_ITEM(ccc,i,cc);
@@ -64,13 +64,17 @@ PyObject *ccc(PyObject *self, PyObject *args){
 //	return PyList_GET_ITEM(a,0);
 //}
 
+#define CCC__DOC__ ""\
+"mls(N,seed=123456):\n" \
+"N:      CCC(N,N,N**2)\n" \
+"seed:   random seed number\n" \
+"Returns CCC three dimension python list \n"
+
 void initsequence(void){
 	static PyMethodDef methods[]={
-		//{"hello", (PyCFunction)hello, METH_NOARGS, "print hello world.\n"},
 		{"mls", mls, METH_VARARGS, "return several M sequences.\n"},
-		{"ccc", ccc, METH_VARARGS, "return several ccc.\n"},
-		//{"correlate", correlate, METH_VARARGS, "return several M sequences.\n"},
-		{NULL, NULL, 0, NULL}
+		{"ccc", (PyCFunction)ccc, METH_VARARGS|METH_KEYWORDS, CCC__DOC__},
+		{NULL, NULL} /* sentinel */
 	};
 	Py_InitModule3("sequence", methods, "my functions for steganography\n");
 }
