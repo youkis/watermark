@@ -8,16 +8,15 @@ PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 	int n;
   char* create="one";
 	int count=0;
-  PyObject* eList = NULL;
 	static char* kwlist[] = {"N","create",NULL};
-	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|s",kwlist,&n,&eList,&create)) return NULL;
+	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|s",kwlist,&n,&create)) return NULL;
 	if(strcmp(create,"one")!=0 && strcmp(create,"full")!=0){
 		fprintf(stderr,"second arg has to be 'one' or 'two'");
 		return NULL;
 	}
 	int N=1<<n;
 	PyObject *mseq=PyList_New(N-1);
-	//PyObject *mseqs=PyList_New(0);
+	PyObject *mseqs=PyList_New(0);
 
 	// 原始多項式
 	for(int i=1;i<N;i+=2){ // 原始多項式fの最下位ビットは必ず1なので2ずつインクリメント
@@ -48,9 +47,8 @@ PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 
 PyObject *ccc(PyObject *self, PyObject *args, PyObject* keywds) {
 	int seed=123456,N;
-  PyObject* eList = NULL;
 	static char* kwlist[] = {"N","seed",NULL};
-	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|i",kwlist,&N,&eList,&seed)) return NULL;
+	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|i",kwlist,&N,&seed)) return NULL;
 	char ***CCC=generateCCC(seed,N);
 	PyObject *c=PyList_New(N*N),*cc=PyList_New(N),*ccc=PyList_New(N);
 	for(int i=0;i<N;i++){
