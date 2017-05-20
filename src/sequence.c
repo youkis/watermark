@@ -1,11 +1,20 @@
 #include <Python.h>
+#include <strings.h>
+#include <stdlib.h>
 #include "ccc.h"
 //#include <numpy/arrayobject.h>
 
-PyObject *mls(PyObject *self, PyObject *args){
+PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 	int n;
+  char* create="one";
 	int count=0;
-	if(!PyArg_ParseTuple(args,"i",&n)) return NULL;
+  PyObject* eList = NULL;
+	static char* kwlist[] = {"N","create",NULL};
+	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|s",kwlist,&n,&eList,&create)) return NULL;
+	if(strcmp(create,"one")!=0 && strcmp(create,"full")!=0){
+		fprintf(stderr,"second arg has to be 'one' or 'two'");
+		return NULL;
+	}
 	int N=1<<n;
 	PyObject *mseq=PyList_New(N-1);
 	//PyObject *mseqs=PyList_New(0);
@@ -29,12 +38,12 @@ PyObject *mls(PyObject *self, PyObject *args){
 				lfsr=(lfsr>>1)^(-(int)(lfsr&1) & f);
 				PyList_SET_ITEM(mseq,k,(lfsr&1)?Py_True:Py_False);
 			}
-			return Py_BuildValue("O", mseq);
-			//PyList_Append((PyObject*)mseqs,(PyObject*)mseq);
+			if(create[0]=='o') return Py_BuildValue("O", mseq);
+			else PyList_Append((PyObject*)mseqs,(PyObject*)mseq);
 		}
 	}
-	return NULL;
-	//return (PyObject*)mseqs;
+	if(create[0]=='o') return NULL;
+	else return (PyObject*)mseqs;
 }
 
 PyObject *ccc(PyObject *self, PyObject *args, PyObject* keywds) {
@@ -64,16 +73,21 @@ PyObject *ccc(PyObject *self, PyObject *args, PyObject* keywds) {
 //	return PyList_GET_ITEM(a,0);
 //}
 
+#define MLS__DOC__ ""\
+"mls(N,create='one'):\n" \
+"N:      demension of monic irreducible polynomial\n" \
+"create: generate 'one' or 'full' MLS\n" \
+"Returns one Maximum Length Sequence \n"
 #define CCC__DOC__ ""\
-"mls(N,seed=123456):\n" \
+"ccc(N,seed=123456):\n" \
 "N:      CCC(N,N,N**2)\n" \
 "seed:   random seed number\n" \
-"Returns CCC three dimension python list \n"
+"Returns CCC three dimensional py-list \n"
 
 void initsequence(void){
 	static PyMethodDef methods[]={
-		{"mls", mls, METH_VARARGS, "return several M sequences.\n"},
-		{"ccc", (PyCFunction)ccc, METH_VARARGS|METH_KEYWORDS, CCC__DOC__},
+		{"mls", (PyCFunction)mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
+		{"ccc", (PyCFunction)ccc, METH_VARARGS|METH_KEYWORDS , CCC__DOC__},
 		{NULL, NULL} /* sentinel */
 	};
 	Py_InitModule3("sequence", methods, "my functions for steganography\n");
