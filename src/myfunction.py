@@ -1,6 +1,5 @@
 #coding:utf-8
 import numpy as np
-from watermark.sequence import *
 
 # 周期相関関数# {{{
 def correlate(x,y): return np.correlate(x,np.append(y,y),'same')[len(x)/2-1:-len(x)/2+1]
