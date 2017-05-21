@@ -15,7 +15,6 @@ PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 		return NULL;
 	}
 	int N=1<<n;
-	PyObject *mseq=PyList_New(N-1);
 	PyObject *mseqs=PyList_New(0);
 
 	// 原始多項式
@@ -29,6 +28,7 @@ PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 			a<<=1;
 		}
 		if(j==N-1){ // fが原始多項式であるからfからM系列を求める
+			PyObject *mseq=PyList_New(N-1);
 			int init=1;
 			int lfsr=init&(N-1);
 			f>>=1;
@@ -50,9 +50,11 @@ PyObject *ccc(PyObject *self, PyObject *args, PyObject* keywds) {
 	static char* kwlist[] = {"N","seed",NULL};
 	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|i",kwlist,&N,&seed)) return NULL;
 	char ***CCC=generateCCC(seed,N);
-	PyObject *c=PyList_New(N*N),*cc=PyList_New(N),*ccc=PyList_New(N);
+	PyObject *ccc=PyList_New(N);
 	for(int i=0;i<N;i++){
+		PyObject *cc=PyList_New(N);
 		for (int j=0;j<N;j++){
+			PyObject *c=PyList_New(N*N);
 			for (int k=0;k<N*N;k++) PyList_SET_ITEM(c,k,Py_BuildValue("i",CCC[i][j][k]));
 			PyList_SET_ITEM(cc,j,c);
 		}
