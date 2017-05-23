@@ -2,7 +2,7 @@
 import numpy as np
 
 # 周期相関関数# {{{
-def correlate(x,y): return np.correlate(x,np.append(y,y),'same')[len(x)/2-1:-len(x)/2+1]
+def correlate(x,y): return np.correlate(x,np.append(y,y),'same')[(len(x)-1)/2:-(len(x)+1)/2]
 # }}}
 # 無音部分の消去# {{{
 def delsilent(x,fs):
