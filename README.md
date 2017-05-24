@@ -8,11 +8,12 @@ PythonのC拡張モジュールAPIで書かれた、電子透かしに用いる�
 
 ## Install
 ```bash
-$ git clone https://github.com/yokis/watermark.git
+$ git clone https://github.com/youkis/watermark.git
 $ cd watermark
 ```
 インストールしたい場合は
 ```bash
+$ python setup.py build
 $ python setup.py isntall
 ```
 インストールせず、watermarkフォルダをおいたディレクトリのみで利用する場合、
@@ -21,38 +22,50 @@ $ vim setup.cfg # ファイル内のコメントを外す
 $ python setup.py build
 ```
 ## Usage
-今のところ、下記のようにimportすれば、以下の関数が実装
+今のところ、下記のようにimportすれば、以下の関数が実装してあるので使えます
 ```Python
 >>> from watermark import *
 ```
 
 <h5>mls(N,create='one')</h5>
- - **N:**       demension of monic irreducible polynomial. mls length correspond to 2^N-1
- - **create:**  generate 'one' or 'full' MLS ([number of mls](https://ja.wikipedia.org/wiki/%E6%97%A2%E7%B4%84%E5%A4%9A%E9%A0%85%E5%BC%8F#.E4.BD.93.E4.B8.8A.E3.81.AE.E6.97.A2.E7.B4.84.E5.A4.9A.E9.A0.85.E5.BC.8F))
- - Returns      one Maximum Length Sequence
++ `N` :
+demension of monic irreducible polynomial. mls length correspond to 2^N-1
++ `create` :
+generate 'one' or 'full' MLS ([number of mls](https://ja.wikipedia.org/wiki/%E6%97%A2%E7%B4%84%E5%A4%9A%E9%A0%85%E5%BC%8F#.E4.BD.93.E4.B8.8A.E3.81.AE.E6.97.A2.E7.B4.84.E5.A4.9A.E9.A0.85.E5.BC.8F "number of mls"))
++ `Returns one Maximum Length Sequence`
 
 <h5>correlate(x,y)</h5>
- - **x,y:** 1 demensional list
- - Returns  cyclic cross-correlation of x and y
++ `x,y`: 1 demensional list
++ `Returns  cyclic cross-correlation of x and y`
 
 <h5>ccc(N,seed=123456)</h5>
- - **N:**    CCC(N,N,N**2)
- - **seed:** random seed number
- - Returns   CCC three dimensional py-list
++ `N` :
+CCC(N,N,N**2)
++ `seed` :
+random seed number
++ `Returns CCC three dimensional py-list`
 
 <h5>getBaseSequence(CCC,datasize,shift,ch=1)</h5>
- - **CCC:**      CCC(N,N,N**2)
- - **datasize:** data size/data length [bit]
- - **shift:**    shift size when you're gonna make embed sequence [tip]
- - **ch:**       CCC chanel to use (1-N)
- - Returns       base sequence
++ `CCC` :
+CCC(N,N,N**2)
++ `datasize` :
+data size/data length [bit]
++ `shift` :
+shift size when you're gonna make embed sequence [tip]
++ `ch` :
+CCC chanel to use (1-N)
++ `Returns base sequence`
 
 <h5>getEmbedSequence(base,data,N,shift)</h5>
- - CCC:    CCC(N,N,N**2)
- - data:   bit list data such as [1,0,0,0,1,1]. [bit]
- - N:      sequence size.
- - shift:  the shift value when the base sequence is Convoluted. [tip]
- - Returns embed sequence.
++ `CCC` :
+CCC(N,N,N**2)
++ `data` :
+bit list data such as [1,0,0,0,1,1]. [bit]
++ `N` :
+sequence size.
++ `shift` :
+the shift value when the base sequence is Convoluted. [tip]
++ `Returns embed sequence.`
 
 
 ## Demo (Memo?)
