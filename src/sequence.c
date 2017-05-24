@@ -132,7 +132,7 @@ PyObject *getBaseSequence(PyObject **self, PyObject *args, PyObject* keywds){
 "base:   base sequence\n" \
 "data:   bit list data such as [1,0,0,0,1,1]. [bit]\n" \
 "N:      CCC size.\n" \
-"shift:  the shift value when the base sequence is Convoluted. [tip]\n" \
+"shift:  the shift value when the base sequence is convoluted. [tip]\n" \
 "Returns embed sequence.\n"
 PyObject *getEmbedSequence(PyObject **self, PyObject *args, PyObject* keywds){
 	static char* kwlist[] = {"base","data","N","shift",NULL};
@@ -148,7 +148,7 @@ PyObject *getEmbedSequence(PyObject **self, PyObject *args, PyObject* keywds){
 	unsigned i,j,k;
 	for(i=0;i<datasize;i++){
 		int *yit=y+i*shift;
-		int di=PyInt_AS_LONG(PyList_GET_ITEM(d,i));
+		int di=PyInt_AS_LONG(PyList_GET_ITEM(d,i))*2-1;
 		for(j=0;j<N;j++){
 			int jNz=j*(NN+zero);
 			for(k=jNz;k<jNz+NN;k++) yit[k]+=di*PyInt_AS_LONG(PyList_GET_ITEM(s,k));

@@ -5,14 +5,12 @@
 #include<fstream>
 #include<math.h>
 
-#define N      4 //CCC(N,N,N*N)を使って埋め込み
-#define DataSize 8 //埋め込むビット数
-//#define N      32 //CCC(N,N,N*N)を使って埋め込み
-//#define DataSize 50 //埋め込むビット数
+#define N      32 //CCC(N,N,N*N)を使って埋め込み
+#define DataSize 50 //埋め込むビット数
 #define T       1 //shift数
 #define ALPHA   1 //埋め込み強度
 #define U   255.0/2 // 正規化乱数平均
-#define S      0.1 // 正規化乱数標準偏差
+#define S      10.0 // 正規化乱数標準偏差
 
 using namespace std;
 

@@ -29,7 +29,7 @@ $ python setup.py build
 
 ### mls(N,create='one') ###
 +   `N` :
-    demension of monic irreducible polynomial. mls length correspond to 2^N-1
+    dimension of monic irreducible polynomial. mls length correspond to 2**N-1
 +   `create` :
     generate 'one' or 'full' MLS [number of mls][link]
 +   `Returns one Maximum Length Sequence`
@@ -37,7 +37,7 @@ $ python setup.py build
   [link]: https://ja.wikipedia.org/wiki/%E6%97%A2%E7%B4%84%E5%A4%9A%E9%A0%85%E5%BC%8F#.E4.BD.93.E4.B8.8A.E3.81.AE.E6.97.A2.E7.B4.84.E5.A4.9A.E9.A0.85.E5.BC.8F
 
 ### correlate(x,y) ###
-+   `x,y`: 1 demensional list
++   `x,y`: 1 dimensional list
 +   `Returns  cyclic cross-correlation of x and y`
 
 ### ccc(N,seed=123456) ###
@@ -55,7 +55,7 @@ $ python setup.py build
 +   `shift` :
     shift size when you're gonna make embed sequence [tip]
 +   `ch` :
-    CCC chanel to use (1-N)
+    CCC chanel to use (1<=ch<=N)
 +   `Returns base sequence`
 
 ### getEmbedSequence(base,data,N,shift) ###
@@ -66,7 +66,7 @@ $ python setup.py build
 +   `N` :
     CCC size.
 +   `shift` :
-    the shift value when the base sequence is Convoluted. [tip]
+    the shift value when the base sequence is convoluted. [tip]
 +   `Returns embed sequence.`
 
 
@@ -151,7 +151,7 @@ array([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1])
 >>> import numpy as np
 >>> N=4
 >>> shift=2 # shift size[tap]. this must be more than 1
->>> d=[1,-1,1,1,-1,1,1,-1] #same as '10110110'
+>>> d=[1,0,1,1,0,1,1,0]
 >>> datasize=len(d)
 >>> s=getBaseSequence(ccc(N),datasize,shift)
 >>> y=getEmbedSequence(s,d,N,shift)
