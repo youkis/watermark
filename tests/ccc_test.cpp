@@ -12,7 +12,7 @@
 #define T       1 //shift数
 #define ALPHA   1 //埋め込み強度
 #define U   255.0/2 // 正規化乱数平均
-#define S      25.0 // 正規化乱数標準偏差
+#define S      0.1 // 正規化乱数標準偏差
 
 using namespace std;
 

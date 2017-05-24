@@ -1,2 +1,2 @@
 from src.myfunction import *
-#from sequence import *
+from sequence import *
