@@ -5,8 +5,10 @@
 #include<fstream>
 #include<math.h>
 
-#define N      32 //CCC(N,N,N*N)を使って埋め込み
-#define DataSize 50 //埋め込むビット数
+#define N      4 //CCC(N,N,N*N)を使って埋め込み
+#define DataSize 8 //埋め込むビット数
+//#define N      32 //CCC(N,N,N*N)を使って埋め込み
+//#define DataSize 50 //埋め込むビット数
 #define T       1 //shift数
 #define ALPHA   1 //埋め込み強度
 #define U   255.0/2 // 正規化乱数平均
@@ -43,13 +45,14 @@ int main(){
 	size_t n=N*N*N+zero*(N-1);                      //基礎系列sの長さ 最後のゼロ埋めは不要
 	char  ***CCC=generateCCC(123456,N),
 	      *s=generateBaseSequence(CCC,1,T,DataSize,N),//基礎系列 callocで0クリア
-	      *d=(char *)malloc(sizeof(char)*DataSize); //埋め込むデータ
+	      d[]={1,0,1,1,0,1,1,0};//(char *)malloc(sizeof(char)*DataSize); //埋め込むデータ
+	for(int i=0;i<n;i++) printf("%2d,",s[i]);       cout<<"\b \n";
 	//埋め込みデータを乱数生成
-	srand((unsigned)time(NULL));
-	for(int i=0;i<DataSize;i++) d[i]=dice();
+	//srand((unsigned)time(NULL));
+	//for(int i=0;i<DataSize;i++) d[i]=dice();
 	int *y=generateEmbedSequence(s,d,T,DataSize,N);
 	ofstream ofs("a.txt"); for(int i=0;i<n+zero;i++) ofs<<y[i]<<"\n"; //埋め込み系列書き出し
-	for(int i=0;i<10;i++) printf("%2d,",y[i]);       cout<<"\b \n";
+	for(int i=0;i<n+zero;i++) printf("%2d,",y[i]);       cout<<"\b \n";
 	//ガウス雑音付加(画素値)
 	srand((unsigned)time(NULL));
 	for(int i=0;i<n+zero;i++){

@@ -1,6 +1,4 @@
 /* CCC(N,N,N^2)生成ライブラリ 5J13佐田悠生 2015.11.2 {{{
- * 高速化のため配列は全て１次元配列を使用
- * array[i][j]はarray[i*N+j]と同義
  * 大きな配列はchar型を使用。二値なので十分。        }}}*/
 #include<stdio.h>
 #include<stdlib.h>
@@ -68,14 +66,31 @@ char ***generateCCC(int seed,size_t N){
  * ccc,nsize:CCC(nsize,nsize,nsize^2)のccc系列
  * ch:使用するチャネル1以上nsize以下
  * t :shit数
- * dsize:埋め込みビット数
+ * dsize:埋め込みビット数 [bit]
  * 戻り値:基礎系列 }}}*/
+//char *generateBaseSequence(char ***ccc,unsigned ch,unsigned t,size_t dsize,size_t nsize){
+//	size_t square=nsize*nsize;
+//	size_t zero=t*(dsize-1);//ゼロ埋めの数
+//	char  *s=(char *)calloc(nsize*nsize*nsize+zero*(nsize-1),sizeof(char)); //基礎系列 callocで0クリア
+//	unsigned i,j;
+//	for(i=0;i<nsize;i++){
+//		char *ss=ss+(square+zero)*i;
+//		char *c=ccc[ch-1][i];
+//		for(j=0;j<square;j++) s[j]=c[j];
+//	}
+//	return s;
+//}
 char *generateBaseSequence(char ***ccc,unsigned ch,unsigned t,size_t dsize,size_t nsize){
 	size_t square=nsize*nsize;
 	size_t zero=t*(dsize-1);//ゼロ埋めの数
-	char  *s=(char *)calloc(nsize*nsize*nsize+zero*(nsize-1),sizeof(char)); //基礎系列 callocで0クリア
+	char  *s=(char *)malloc((nsize*nsize*nsize+zero*(nsize-1))*sizeof(char)); //基礎系列 callocで0クリア
 	unsigned i,j;
-	for(i=0;i<nsize;i++)for(j=0;j<square;j++) s[(square+zero)*i+j]=ccc[ch-1][i][j];
+	for(i=0;i<nsize;i++){
+		char *ss=s+(square+zero)*i;
+		char *c=ccc[ch-1][i];
+		for(j=0;j<square;j++) ss[j]=c[j];
+		for(j=square;j<square+zero;j++) s[j]=0;
+	}
 	return s;
 }
 /* 埋め込み系列生成 {{{
@@ -88,11 +103,18 @@ char *generateBaseSequence(char ***ccc,unsigned ch,unsigned t,size_t dsize,size_
 int *generateEmbedSequence(char s[],char d[],unsigned t,size_t dsize,size_t nsize){
 	size_t zero=t*(dsize-1);//ゼロ埋めの数
 	size_t n=nsize*nsize*nsize+zero*(nsize-1); //基礎系列sの長さ 最後のゼロ埋めは不要
-	int *y=(int  *)calloc(n+zero,sizeof(int)); //埋め込み系列
+	size_t NN=nsize*nsize;
+	int *y=(int*)malloc((n+zero)*sizeof(int)); //埋め込み系列
 	unsigned i,j,k;
-	for(i=0;i<dsize;i++)
-	for(j=0;j<nsize;j++)
-	for(k=j*nsize*nsize+j*zero;k<(j+1)*nsize*nsize+j*zero;k++) y[i*t+k]+=d[i]*s[k];
+	for(i=0;i<dsize;i++){
+		int *yit=y+i*t;
+		char di=d[i];
+		for(j=0;j<nsize;j++){
+			int jNz=j*(NN+zero);
+			for(k=jNz;k<jNz+NN;k++) yit[k]+=di*s[k];
+		}
+		for(j=NN*i;j<i*t;j++) y[j]=0;
+	}
 	return y;
 }
 
