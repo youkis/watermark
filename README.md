@@ -62,7 +62,7 @@ $ python setup.py build
 +   `base` :
     base sequence
 +   `data` :
-    bit list data such as [1,0,0,0,1,1]. [bit]
+    bit list data such as [1,0,0,0,1,1].
 +   `N` :
     CCC size.
 +   `shift` :
