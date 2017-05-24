@@ -59,12 +59,12 @@ $ python setup.py build
 +   `Returns base sequence`
 
 ### getEmbedSequence(base,data,N,shift) ###
-+   `CCC` :
-    CCC(N,N,N**2)
++   `base` :
+    base sequence
 +   `data` :
     bit list data such as [1,0,0,0,1,1]. [bit]
 +   `N` :
-    sequence size.
+    CCC size.
 +   `shift` :
     the shift value when the base sequence is Convoluted. [tip]
 +   `Returns embed sequence.`

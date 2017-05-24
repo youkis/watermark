@@ -129,9 +129,9 @@ PyObject *getBaseSequence(PyObject **self, PyObject *args, PyObject* keywds){
 }
 #define GETEMBEDSEQUENCE__DOC__ ""\
 "getEmbedSequence(base,data,N,shift):\n" \
-"CCC:    CCC(N,N,N**2)\n" \
+"base:   base sequence\n" \
 "data:   bit list data such as [1,0,0,0,1,1]. [bit]\n" \
-"N:      sequence size.\n" \
+"N:      CCC size.\n" \
 "shift:  the shift value when the base sequence is Convoluted. [tip]\n" \
 "Returns embed sequence.\n"
 PyObject *getEmbedSequence(PyObject **self, PyObject *args, PyObject* keywds){
