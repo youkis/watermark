@@ -43,10 +43,11 @@ PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 		return NULL;
 	}
 	int N=1<<n;
+	int i,k;
 	PyObject *mseqs=PyList_New(0);
 
 	// 原始多項式
-	for(int i=1;i<N;i+=2){ // 原始多項式fの最下位ビットは必ず1なので2ずつインクリメント
+	for(i=1;i<N;i+=2){ // 原始多項式fの最下位ビットは必ず1なので2ずつインクリメント
 		int f=N^i;
 		int a=N;
 		int j;
@@ -61,7 +62,7 @@ PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 			int lfsr=init&(N-1);
 			f>>=1;
 			count++;
-			for(int k=0;k<N-1;k++){
+			for(k=0;k<N-1;k++){
 				lfsr=(lfsr>>1)^(-(int)(lfsr&1) & f);
 				//PyList_SET_ITEM(mseq,k,(lfsr&1)?Py_True:Py_False);
 				PyList_SET_ITEM(mseq,k,(lfsr&1)?Py_BuildValue("i",1):Py_BuildValue("i",-1));
@@ -81,15 +82,16 @@ PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 "Returns CCC three dimensional py-list \n"
 PyObject *ccc(PyObject *self, PyObject *args, PyObject* keywds) {
 	int seed=123456,N;
+	int i,j,k;
 	static char* kwlist[] = {"N","seed",NULL};
 	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|i",kwlist,&N,&seed)) return NULL;
 	char ***CCC=generateCCC(seed,N);
 	PyObject *ccc=PyList_New(N);
-	for(int i=0;i<N;i++){
+	for(i=0;i<N;i++){
 		PyObject *cc=PyList_New(N);
-		for (int j=0;j<N;j++){
+		for(j=0;j<N;j++){
 			PyObject *c=PyList_New(N*N);
-			for (int k=0;k<N*N;k++) PyList_SET_ITEM(c,k,Py_BuildValue("i",CCC[i][j][k]));
+			for(k=0;k<N*N;k++) PyList_SET_ITEM(c,k,Py_BuildValue("i",CCC[i][j][k]));
 			PyList_SET_ITEM(cc,j,c);
 		}
 		PyList_SET_ITEM(ccc,i,cc);
@@ -112,9 +114,9 @@ PyObject *getBaseSequence(PyObject **self, PyObject *args, PyObject* keywds){
 	PyObject *ccc;
 	int ch=1,shift,datasize;
 	if(!PyArg_ParseTupleAndKeywords(args,keywds,"Oii|i",kwlist,&ccc,&datasize,&shift,&ch)) return NULL;
-	size_t N=PyList_GET_SIZE(ccc);
-	size_t NN=N*N;
-	size_t zero=shift*(datasize-1);//ゼロ埋めの数
+	unsigned N=PyList_GET_SIZE(ccc);
+	unsigned NN=N*N;
+	unsigned zero=shift*(datasize-1);//ゼロ埋めの数
 	//PyObject *s=PyList_New((int)(N*N*N+zero*(N-1)));//メモリコンフリクトする
 	PyObject *s=PyList_New(0);
 	unsigned i,j;
@@ -139,7 +141,7 @@ PyObject *getEmbedSequence(PyObject **self, PyObject *args, PyObject* keywds){
 	PyObject *s,*d;
 	unsigned shift,N;
 	if(!PyArg_ParseTupleAndKeywords(args,keywds,"OOii",kwlist,&s,&d,&N,&shift)) return NULL;
-	int datasize=PyList_GET_SIZE(d);
+	unsigned datasize=PyList_GET_SIZE(d);
 	unsigned zero=shift*(datasize-1);//ゼロ埋めの数
 	unsigned n=N*N*N+zero*(N-1); //基礎系列sの長さ 最後のゼロ埋めは不要
 	unsigned NN=N*N;
