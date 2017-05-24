@@ -3,10 +3,10 @@ watermark
 PythonのC拡張モジュールAPIで書かれた、電子透かしに用いる関数ライブラリ
 
 ## Requirement
-linux, MacOS
-Windowsは動くだろうけど知らない。だめだったら仮想OS立ち上げてください
-numpy必要 correlate関数だけはnumpyの関数に渡してるだけなので...
-環境によってはPython.hとかのためにpython-devが必要な可能性あり
+    linux, MacOS
+    Windowsは動くだろうけど知らない。だめだったら仮想OS立ち上げてください。
+    numpy必要 correlate関数だけはnumpyの関数に渡してるだけなので...
+		環境によってはPython.hとかのためにpython-devが必要な可能性あり
 
 ## Install
 
@@ -156,7 +156,7 @@ array([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1])
 >>> from watermark import *
 >>> import numpy as np
 >>> N=4
->>> shift=2 # shift size[tap]. this must be more than 1
+>>> shift=2 # shift size[tap]. shift>=1
 >>> d=[1,0,1,1,0,1,1,0]
 >>> datasize=len(d)
 >>> s=getBaseSequence(ccc(N),datasize,shift)
