@@ -8,7 +8,9 @@ setup(
     author_email= 'youki@kaede-tokyo.net',
     description= 'This is a package involves my functions',
     package_dir = {'watermark':''},
+    packages = ['watermark'],
+    py_modules = ['src.myfunction'],
     ext_modules= [
-        Extension('watermark.sequence',sources=['src/sequence.c'])#,include_dirs=[]+get_numpy_include_dirs())
+        Extension('watermark.sequence',['src/sequence.c'],extra_objects = [])#,include_dirs=[]+get_numpy_include_dirs())
     ]
 )
