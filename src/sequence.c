@@ -130,7 +130,7 @@ PyObject *getBaseSequence(PyObject **self, PyObject *args, PyObject* keywds){
 #define GETEMBEDSEQUENCE__DOC__ ""\
 "getEmbedSequence(base,data,N,shift):\n" \
 "base:   base sequence\n" \
-"data:   bit list data such as [1,0,0,0,1,1]. [bit]\n" \
+"data:   bit list data such as [1,0,0,0,1,1].\n" \
 "N:      CCC size.\n" \
 "shift:  the shift value when the base sequence is convoluted. [tip]\n" \
 "Returns embed sequence.\n"
