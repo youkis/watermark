@@ -166,5 +166,5 @@ array([1, 0, 1, 1, 0, 1, 1, 0])
 ```
 
 ## Licence
-[MIT License](https://github.com/youkis/blob/master/LICENSE.txt) © Youki Sada
+[MIT License](https://github.com/youkis/watermark/blob/master/LICENSE.txt) © Youki Sada
 
