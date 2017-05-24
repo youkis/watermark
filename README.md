@@ -51,7 +51,7 @@ $ python setup.py build
 +   `CCC` :
     CCC(N,N,N**2)
 +   `datasize` :
-    data size/data length [bit]
+    data size [bit]
 +   `shift` :
     shift size when you're gonna make embed sequence [tip]
 +   `ch` :
