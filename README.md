@@ -3,10 +3,10 @@ watermark
 PythonのC拡張モジュールAPIで書かれた、電子透かしに用いる関数ライブラリ
 
 ## Requirement
-    linux, MacOS
-    Windowsは動くだろうけど知らない。だめだったら仮想OS立ち上げてください。
-    numpy必要 correlate関数だけはnumpyの関数に渡してるだけなので...
-		環境によってはPython.hとかのためにpython-devが必要な可能性あり
+linux, MacOS  
+Windowsは動くだろうけど知らない。だめだったら仮想OS立ち上げてください。  
+numpy必要 correlate関数だけはnumpyの関数に渡してるだけなので...  
+環境によってはPython.hとかのためにpython-devが必要な可能性あり
 
 ## Install
 
