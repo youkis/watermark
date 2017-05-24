@@ -18,7 +18,7 @@ $ cd watermark
 インストールしたい場合は
 ```bash
 $ python setup.py build
-$ python setup.py isntall
+$ sudo python setup.py install
 ```
 
 インストールせず、watermarkフォルダをおいたディレクトリのみで利用する場合、
