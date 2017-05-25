@@ -38,7 +38,7 @@ $ python setup.py build
     dimension of monic irreducible polynomial. mls length correspond to 2**N-1
 +   `create` :
     generate 'one' or 'full' MLS [number of mls][link]
-+   `Returns one Maximum Length Sequence`
++   `Returns one or [this number][link] of Maximum Length Sequences`
 
   [link]: https://ja.wikipedia.org/wiki/%E6%97%A2%E7%B4%84%E5%A4%9A%E9%A0%85%E5%BC%8F#.E4.BD.93.E4.B8.8A.E3.81.AE.E6.97.A2.E7.B4.84.E5.A4.9A.E9.A0.85.E5.BC.8F
 
@@ -51,7 +51,7 @@ $ python setup.py build
     CCC(N,N,N**2)
 +   `seed` :
     random seed number
-+   `Returns CCC three dimensional py-list`
++   `Returns CCC, which is three dimensional list`
 
 ### getBaseSequence(CCC,datasize,shift,ch=1) ###
 +   `CCC` :
@@ -61,7 +61,7 @@ $ python setup.py build
 +   `shift` :
     shift size when you're gonna make embed sequence [tip]
 +   `ch` :
-    CCC chanel to use (1<=ch<=N)
+    A CCC chanel to use (1<=ch<=N)
 +   `Returns base sequence`
 
 ### getEmbedSequence(base,data,N,shift) ###
