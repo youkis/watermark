@@ -31,7 +31,7 @@ THE SOFTWARE.
 "mls(N,create='one'):\n" \
 "N:      demension of monic irreducible polynomial\n" \
 "create: generate 'one' or 'full' MLS\n" \
-"Returns one Maximum Length Sequence \n"
+"Returns one or full Maximum Length Sequences \n"
 PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 	int n;
   char* create="one";
@@ -79,7 +79,7 @@ PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 "ccc(N,seed=123456):\n" \
 "N:      CCC(N,N,N**2)\n" \
 "seed:   random seed number\n" \
-"Returns CCC three dimensional py-list \n"
+"Returns CCC, which is three dimensional list \n"
 PyObject *ccc(PyObject *self, PyObject *args, PyObject* keywds) {
 	int seed=123456,N;
 	int i,j,k;
@@ -105,7 +105,7 @@ PyObject *ccc(PyObject *self, PyObject *args, PyObject* keywds) {
 #define GETBASESEQUENCE__DOC__ ""\
 "getBaseSequence(CCC,datasize,shift,ch):\n" \
 "CCC:      CCC(N,N,N**2)\n" \
-"datasize: data size/data length [bit]\n" \
+"datasize: data size [bit]\n" \
 "shift:    shift size when you're gonna make embed sequence [tip]\n" \
 "ch:       CCC chanel to use (1-N)\n" \
 "Returns base sequence \n"
