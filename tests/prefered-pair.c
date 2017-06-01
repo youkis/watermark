@@ -1,4 +1,4 @@
-#include"mls.h"
+#include"../src/mls.h"
 
 int main(){
 	unsigned pref_size;
