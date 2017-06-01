@@ -112,15 +112,13 @@ PyObject *getBaseSequence(PyObject **self, PyObject *args, PyObject* keywds){
 	unsigned N=PyList_GET_SIZE(ccc);
 	unsigned NN=N*N;
 	unsigned zero=shift*(datasize-1);//ゼロ埋めの数
-	//PyObject *s=PyList_New((int)(N*N*N+zero*(N-1)));//メモリコンフリクトする
-	PyObject *s=PyList_New(0);
 	unsigned i,j;
+	PyObject *s=PyList_New((int)(N*N*N+zero*(N-1)));//メモリコンフリクトする
 	for(i=0;i<N;i++){
-		//char ss=(NN+zero)*i;
+		char ss=(NN+zero)*i;
 		PyObject *c=PyList_GET_ITEM(PyList_GET_ITEM(ccc,ch-1),i);
-		for(j=0;j<NN;j++) PyList_Append(s,PyList_GET_ITEM(c,j));//PyList_SET_ITEM(s,ss+j,PyList_GET_ITEM(c,j));
-		for(j=0;j<zero;j++) PyList_Append(s,Py_BuildValue("i",0));
-		//for(j=NN;j<NN+zero;j++) PyList_SET_ITEM(s,ss+j,Py_BuildValue("i",0));
+		for(j=0;j<NN;j++) PyList_SET_ITEM(s,ss+j,PyList_GET_ITEM(c,j));
+		for(j=NN;j<NN+zero;j++) PyList_SET_ITEM(s,ss+j,Py_BuildValue("i",0));
 	}
 	return s;
 }

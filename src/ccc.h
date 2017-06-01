@@ -77,7 +77,7 @@ char *generateBaseSequence(char ***ccc,unsigned ch,unsigned t,unsigned dsize,uns
 		char *ss=s+(square+zero)*i;
 		char *c=ccc[ch-1][i];
 		for(j=0;j<square;j++) ss[j]=c[j];
-		for(j=square;j<square+zero;j++) s[j]=0;
+		if(i!=nsize-1) for(j=square;j<square+zero;j++) s[j]=0;
 	}
 	return s;
 }
