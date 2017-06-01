@@ -10,7 +10,7 @@ int main(){
 		for(j=0;j<N-1;j++) printf("%d,",prefm[i][j]);
 		printf("\n");
 	}
-	free(prefm[0]);
+	free(*prefm);
 	free(prefm);
 	return 0;
 }

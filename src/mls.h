@@ -37,12 +37,12 @@ char **mls(unsigned n,unsigned *mls_size,char is_full){
 	flag[1]=0;                    // 1は既約ではない
 	for(i=2;mul(i,i)<N2;i++)
 		if(flag[i]==1)
-			for(j=i;mul(i,j)<=N2;j++) flag[mul(i,j)]=0;
-	for(i=N+1;i<=N2;i++) if(flag[i]) irr_num++;
+			for(j=i;mul(i,j)<N2;j++) flag[mul(i,j)]=0;
+	for(i=N+1;i<N2;i++) if(flag[i]) irr_num++;
 
 	irr=malloc(sizeof(unsigned)*irr_num);
 	irr_num=0;
-	for(i=N+1;i<=N2;i++) if(flag[i]) irr[irr_num++]=i;
+	for(i=N+1;i<N2;i++) if(flag[i]) irr[irr_num++]=i;
 	free(flag);
 
 	// 原始多項式でないirr要素は省いてirrを再構築
@@ -124,8 +124,8 @@ char **preferd(unsigned n, unsigned *pref_size){
 		}
 	}
 	*pref_size=depth+1;
-	prefm=(char**)malloc(sizeof(char*)*depth);
-	prefmp=(char*)malloc(sizeof(char)*depth*(N-1));
+	prefm=(char**)malloc(sizeof(char*)*(*pref_size));
+	prefmp=(char*)malloc(sizeof(char)*(*pref_size)*(N-1));
 
 	for(i=0;i<depth+1;i++){
 		prefm[i]=prefmp+i*(N-1);
@@ -136,3 +136,4 @@ char **preferd(unsigned n, unsigned *pref_size){
 	free(m);
 	return prefm;
 }
+

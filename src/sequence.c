@@ -25,54 +25,49 @@ THE SOFTWARE.
 #include <strings.h>
 #include <stdlib.h>
 #include "ccc.h"
+#include "mls.h"
 //#include <numpy/arrayobject.h>
 
 #define MLS__DOC__ ""\
 "mls(N,create='one'):\n" \
 "N:      demension of monic irreducible polynomial\n" \
 "create: generate 'one' or 'full' MLS\n" \
+"        or 'preferd' to generate preferd M-sequences\n" \
 "Returns one or full Maximum Length Sequences \n"
-PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
-	int n;
+PyObject *py_mls(PyObject *self, PyObject *args, PyObject* keywds) {
+	unsigned n;
   char* create="one";
-	int count=0;
 	static char* kwlist[] = {"N","create",NULL};
+	unsigned mls_size=0;
+	char **m;
+	unsigned N;
+	unsigned i,j;
+	PyObject *mseqs;
+
 	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|s",kwlist,&n,&create)) return NULL;
-	if(strcmp(create,"one")!=0 && strcmp(create,"full")!=0){
-		fprintf(stderr,"second arg has to be 'one' or 'two'");
+	if(strcmp(create,"one")!=0 && strcmp(create,"full")!=0 && strcmp(create,"preferd")!=0){
+		fprintf(stderr,"second arg has to be 'one' or 'full' or 'preferd'\n");
 		return NULL;
 	}
-	int N=1<<n;
-	int i,k;
-	PyObject *mseqs=PyList_New(0);
 
-	// 原始多項式
-	for(i=1;i<N;i+=2){ // 原始多項式fの最下位ビットは必ず1なので2ずつインクリメント
-		int f=N^i;
-		int a=N;
-		int j;
-		for(j=n;j<N;j++){
-			if((a&N)==N) a^=f;
-			if(a==1) break;
-			a<<=1;
-		}
-		if(j==N-1){ // fが原始多項式であるからfからM系列を求める
-			PyObject *mseq=PyList_New(N-1);
-			int init=1;
-			int lfsr=init&(N-1);
-			f>>=1;
-			count++;
-			for(k=0;k<N-1;k++){
-				lfsr=(lfsr>>1)^(-(int)(lfsr&1) & f);
-				//PyList_SET_ITEM(mseq,k,(lfsr&1)?Py_True:Py_False);
-				PyList_SET_ITEM(mseq,k,(lfsr&1)?Py_BuildValue("i",1):Py_BuildValue("i",-1));
-			}
-			if(create[0]=='o') return Py_BuildValue("O", mseq);
-			else PyList_Append((PyObject*)mseqs,(PyObject*)mseq);
-		}
+	if(create[0]=='o')      m=mls(n,&mls_size,0);
+	else if(create[0]=='f') m=mls(n,&mls_size,1);
+	else m=preferd(n,&mls_size);
+
+	mseqs=PyList_New(mls_size);
+	N=1<<n;
+
+	for(i=0;i<mls_size;i++){
+		PyObject *mseq=PyList_New(N-1);
+		for(j=0;j<N-1;j++) PyList_SET_ITEM(mseq,j,Py_BuildValue("i",m[i][j]));
+		PyList_SET_ITEM(mseqs,i,mseq);
 	}
-	if(create[0]=='o') return NULL;
-	else return (PyObject*)mseqs;
+
+	free(*m);
+	free(m);
+
+	if(mls_size==1) return PyList_GET_ITEM(mseqs,0);
+	return mseqs;
 }
 
 #define CCC__DOC__ ""\
@@ -80,7 +75,7 @@ PyObject *mls(PyObject *self, PyObject *args, PyObject* keywds) {
 "N:      CCC(N,N,N**2)\n" \
 "seed:   random seed number\n" \
 "Returns CCC, which is three dimensional list \n"
-PyObject *ccc(PyObject *self, PyObject *args, PyObject* keywds) {
+PyObject *py_ccc(PyObject *self, PyObject *args, PyObject* keywds) {
 	int seed=123456,N;
 	int i,j,k;
 	static char* kwlist[] = {"N","seed",NULL};
@@ -165,8 +160,8 @@ PyObject *getEmbedSequence(PyObject **self, PyObject *args, PyObject* keywds){
 
 void initsequence(void){
 	static PyMethodDef methods[]={
-		{"mls", (PyCFunction)mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
-		{"ccc", (PyCFunction)ccc, METH_VARARGS|METH_KEYWORDS , CCC__DOC__},
+		{"mls", (PyCFunction)py_mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
+		{"ccc", (PyCFunction)py_ccc, METH_VARARGS|METH_KEYWORDS , CCC__DOC__},
 		{"getBaseSequence" , (PyCFunction)getBaseSequence , METH_VARARGS|METH_KEYWORDS , GETBASESEQUENCE__DOC__},
 		{"getEmbedSequence", (PyCFunction)getEmbedSequence, METH_VARARGS|METH_KEYWORDS , GETEMBEDSEQUENCE__DOC__},
 		{NULL, NULL} /* sentinel */
