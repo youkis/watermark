@@ -37,8 +37,8 @@ $ python setup.py build
 +   `N` :
     dimension of monic irreducible polynomial. mls length correspond to 2**N-1
 +   `create` :
-    generate 'one' or 'full' MLS [number of mls][link]
-+   `Returns one or [this number][link] of Maximum Length Sequences`
+    generate 'one' or 'full' or 'preferd' pair MLS ([full number of mls][link])
++   `Returns one or full or preferd pair of Maximum Length Sequences`
 
   [link]: https://ja.wikipedia.org/wiki/%E6%97%A2%E7%B4%84%E5%A4%9A%E9%A0%85%E5%BC%8F#.E4.BD.93.E4.B8.8A.E3.81.AE.E6.97.A2.E7.B4.84.E5.A4.9A.E9.A0.85.E5.BC.8F
 
