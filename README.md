@@ -3,10 +3,9 @@ watermark
 PythonのC拡張モジュールAPIで書かれた、電子透かしに用いる関数ライブラリ
 
 ## Requirement
-linux, MacOS  
-Windowsは動くだろうけど知らない。だめだったら仮想OS立ち上げてください。  
-numpy必要 correlate関数だけはnumpyの関数に渡してるだけなので...  
-環境によってはPython.hとかのためにpython-devが必要な可能性あり
+linux, MacOS, windows?  
+numpy必要 相互相関のためのcorrelate関数だけはnumpyの関数に渡してるだけなので...  
+環境によってはヘッダーファイルのためにpython-devが必要な場合もあり
 
 ## Install
 
@@ -28,19 +27,17 @@ $ python setup.py build
 ```
 
 ## Usage
-今のところ、下記のようにimportすれば、以下の関数が実装してあるので使えます
+今のところ、下記のようにimportすれば、以下の関数が使用可能
 ```Python
 >>> from watermark import *
 ```
 
 ### mls(N,create='one') ###
 +   `N` :
-    dimension of monic irreducible polynomial. mls length correspond to 2**N-1
+    degree of polynomial under GF(2). mls length correspond to 2**N-1
 +   `create` :
-    generate 'one' or 'full' or 'preferd' pair MLS ([full number of mls][link])
+    generate 'one' or 'full' or 'preferd' pair MLS
 +   `Returns one or full or preferd pair of Maximum Length Sequences`
-
-  [link]: https://ja.wikipedia.org/wiki/%E6%97%A2%E7%B4%84%E5%A4%9A%E9%A0%85%E5%BC%8F#.E4.BD.93.E4.B8.8A.E3.81.AE.E6.97.A2.E7.B4.84.E5.A4.9A.E9.A0.85.E5.BC.8F
 
 ### correlate(x,y) ###
 +   `x,y`: 1 dimensional list
