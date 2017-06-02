@@ -45,36 +45,26 @@ char **mls(unsigned n,unsigned *mls_size,char is_full){
 	for(i=N+1;i<N2;i++) if(flag[i]) irr[irr_num++]=i;
 	free(flag);
 
-	// 原始多項式でないirr要素は省いてirrを再構築
-	for(i=0;i<irr_num;i++){
-		unsigned f=irr[i];
-		unsigned a=N;
-		for(j=n;j<N;j++){
-			if((a&N)==N) a^=f; // N以上になったらa=a mod N
-			if(a==1) break;
-			a<<=1;
-		}
-		if(j<N-1)continue; // 周期が最大じゃなきゃ原始多項式じゃない
-		irr[mls_num++]=f;
-		if(!is_full) break;
-	}
-
-	//原始多項式からM系列生成
-	mp=(char*)malloc(sizeof(char)*mls_num*(N-1));
-	mseqes=(char**)malloc(sizeof(char*)*mls_num);
-	for(i=0;i<mls_num;i++){// fが原始多項式であるからfからM系列を求める
-		unsigned f=irr[i];
+	//既約多項式からM系列生成
+	mp=(char*)malloc(sizeof(char)*irr_num*(N-1));
+	for(i=0;i<irr_num;i++){// fが原始多項式であるからfからM系列を求める
+		unsigned f=irr[i]>>1;
 		unsigned lfsr=1;
-		mseqes[i]=mp+i*(N-1); //mpにpointing
-		f>>=1;
-		for(k=0;k<N-1;k++){
-			lfsr=(lfsr>>1)^(-(int)(lfsr&1) & f);
-			mseqes[i][k]=(lfsr&1)*2-1;
+		char *tmp=mp+i*(N-1);
+		for(k=0;k<N-1;k++){ //ガロア線形シフトレジスタ
+			lfsr=(lfsr>>1)^(-(lfsr&1) & f);
+			tmp[k]=lfsr&1?1:-1;
+			if(lfsr==1) break;
+		}
+		if(k==N-2){
+			mls_num++;
+			if(!is_full) break;
 		}
 	}
+	mp=(char*)realloc(mp,mls_num*(N-1));
+	mseqes=(char**)malloc(sizeof(char*)*mls_num);
+	for(i=0;i<mls_num;i++) mseqes[i]=mp+i*(N-1); //mpにpointing
 	free(irr);
-	//free(mseqes[0]);
-	//free(mseqes);
 	*mls_size=mls_num;
 	return mseqes;
 }
@@ -132,7 +122,7 @@ char **preferd(unsigned n, unsigned *pref_size){
 		for(j=0;j<N-1;j++) prefm[i][j]=m[pair[i]][j];
 	}
 
-	free(m[0]);
+	free(*m);
 	free(m);
 	return prefm;
 }
