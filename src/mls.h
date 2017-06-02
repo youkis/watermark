@@ -50,7 +50,7 @@ char **mls(unsigned n,unsigned *mls_size,char is_full){
 	for(i=0;i<irr_num;i++){// fが原始多項式であるからfからM系列を求める
 		unsigned f=irr[i]>>1;
 		unsigned lfsr=1;
-		char *tmp=mp+i*(N-1);
+		char *tmp=mp+mls_num*(N-1);
 		for(k=0;k<N-1;k++){ //ガロア線形シフトレジスタ
 			lfsr=(lfsr>>1)^(-(lfsr&1) & f);
 			tmp[k]=lfsr&1?1:-1;
