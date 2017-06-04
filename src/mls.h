@@ -2,8 +2,8 @@
 #include<stdlib.h>
 
 int innerPro(char *x,char *y,size_t n,int t){
-	int ret=0;
-	for(int i=0;i<n;i++)ret+=x[i]*y[(i+t)%n];
+	int ret=0,i;
+	for(i=0;i<n;i++)ret+=x[i]*y[(i+t)%n];
 	return ret;
 }
 // GF(2)多項式の掛け算
