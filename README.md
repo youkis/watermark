@@ -162,7 +162,7 @@ array([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1])
 >>> 
 >>> #extract
 >>> tmp=np.correlate(y,s,'full')[len(s)-1:]
->>> impulses=np.array([tmp[i] for i in range(0,datasize*shift,shift)])
+>>> impulses=tmp[:datasize*shift:shift]
 >>> impulses
 array([ 64, -64,  64,  64, -64,  64,  64, -64])
 >>> (impulses>0).astype(int)
