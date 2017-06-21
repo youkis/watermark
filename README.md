@@ -99,6 +99,7 @@ array([ 0,  0, -4, 16, -4,  0,  0,  4, -8,  4, -4,  0, -4,  4, -8,  4])
 >>> extract
 13
 >>> np.frombuffer(format(extract,'b'),'b')-ord('0')
+>>> np.frombuffer(format(extract,'b').encode('utf-8'),'b')-ord('0')
 array([1, 1, 0, 1], dtype=int8)
 >>> d
 [1, 1, 0, 1]
