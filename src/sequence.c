@@ -110,15 +110,14 @@ PyObject *getBaseSequence(PyObject **self, PyObject *args, PyObject* keywds){
 	int ch=1,shift,datasize;
 	if(!PyArg_ParseTupleAndKeywords(args,keywds,"Oii|i",kwlist,&ccc,&datasize,&shift,&ch)) return NULL;
 	unsigned N=PyList_GET_SIZE(ccc);
-	unsigned NN=N*N;
 	unsigned zero=shift*(datasize-1);//ゼロ埋めの数
-	unsigned i,j;
-	PyObject *s=PyList_New((int)(N*N*N+zero*(N-1)));
+	unsigned i;
+	PyObject *s=PyList_New(0),*tmp=PyList_New(1),*z;
+	PyList_SET_ITEM(tmp,0,Py_BuildValue("i",0));
+	z=PyNumber_Multiply(tmp,Py_BuildValue("i",zero));
 	for(i=0;i<N;i++){
-		char ss=(NN+zero)*i;
-		PyObject *c=PyList_GET_ITEM(PyList_GET_ITEM(ccc,ch-1),i);
-		for(j=0;j<NN;j++) PyList_SET_ITEM(s,ss+j,Py_BuildValue("i",PyLong_AsLong(PyList_GET_ITEM(c,j))));
-		for(j=NN;j<NN+zero && i!=N-1;j++) PyList_SET_ITEM(s,ss+j,Py_BuildValue("i",0));
+		PyNumber_InPlaceAdd(s,PyList_GET_ITEM(PyList_GET_ITEM(ccc,ch-1),i));
+		if(i!=N) PyNumber_InPlaceAdd(s,z);
 	}
 	return s;
 }
@@ -155,33 +154,23 @@ PyObject *getEmbedSequence(PyObject **self, PyObject *args, PyObject* keywds){
 	//return Py_BuildValue("i",1);
 }
 
+static PyMethodDef methods[]={
+	{"mls", (PyCFunction)py_mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
+	{"ccc", (PyCFunction)py_ccc, METH_VARARGS|METH_KEYWORDS , CCC__DOC__},
+	{"getBaseSequence" , (PyCFunction)getBaseSequence , METH_VARARGS|METH_KEYWORDS , GETBASESEQUENCE__DOC__},
+	{"getEmbedSequence", (PyCFunction)getEmbedSequence, METH_VARARGS|METH_KEYWORDS , GETEMBEDSEQUENCE__DOC__},
+	{NULL, NULL} /* sentinel */
+};
 #if PY_MAJOR_VERSION >= 3
 PyMODINIT_FUNC PyInit_sequence(void){
-	static PyMethodDef methods[]={
-		{"mls", (PyCFunction)py_mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
-		{"ccc", (PyCFunction)py_ccc, METH_VARARGS|METH_KEYWORDS , CCC__DOC__},
-		{"getBaseSequence" , (PyCFunction)getBaseSequence , METH_VARARGS|METH_KEYWORDS , GETBASESEQUENCE__DOC__},
-		{"getEmbedSequence", (PyCFunction)getEmbedSequence, METH_VARARGS|METH_KEYWORDS , GETEMBEDSEQUENCE__DOC__},
-		{NULL, NULL} /* sentinel */
-	};
-	static struct PyModuleDef cmodule = {
-		PyModuleDef_HEAD_INIT,
-		"sequence",     /* name of module */
-		"my functions for steganography\n", /* module documentation, may be NULL */
-		-1,      /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
-		methods
+	static struct PyModuleDef cmodule={
+		PyModuleDef_HEAD_INIT, "sequence","my functions for steganography\n", -1, methods
 	};
 	return PyModule_Create(&cmodule);
 }
 #else
 void initsequence(void){
-	static PyMethodDef methods[]={
-		{"mls", (PyCFunction)py_mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
-		{"ccc", (PyCFunction)py_ccc, METH_VARARGS|METH_KEYWORDS , CCC__DOC__},
-		{"getBaseSequence" , (PyCFunction)getBaseSequence , METH_VARARGS|METH_KEYWORDS , GETBASESEQUENCE__DOC__},
-		{"getEmbedSequence", (PyCFunction)getEmbedSequence, METH_VARARGS|METH_KEYWORDS , GETEMBEDSEQUENCE__DOC__},
-		{NULL, NULL} /* sentinel */
-	};
 	Py_InitModule3("sequence", methods, "my functions for steganography\n");
 }
 #endif
+
