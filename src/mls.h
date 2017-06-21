@@ -106,7 +106,7 @@ char **preferd(unsigned n, unsigned *pref_size){
 			if(mat[pair[depth]][i]){
 				int flag=1;
 				for(l=depth-1;l>=0;l--)
-					if(mat[pair[j]][i]!=1){
+					if(mat[pair[l]][i]!=1){
 						flag=0;
 						break;
 					}
