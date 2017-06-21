@@ -143,10 +143,10 @@ PyObject *getEmbedSequence(PyObject **self, PyObject *args, PyObject* keywds){
 	unsigned i,j,k;
 	for(i=0;i<datasize;i++){
 		int *yit=y+i*shift;
-		int di=PyInt_AS_LONG(PyList_GET_ITEM(d,i))*2-1;
+		int di=PyLong_AsLong(PyList_GET_ITEM(d,i))*2-1;
 		for(j=0;j<N;j++){
 			int jNz=j*(NN+zero);
-			for(k=jNz;k<jNz+NN;k++) yit[k]+=di*PyInt_AS_LONG(PyList_GET_ITEM(s,k));
+			for(k=jNz;k<jNz+NN;k++) yit[k]+=di*PyLong_AsLong(PyList_GET_ITEM(s,k));
 		}
 	}
 	for(i=0;i<n+zero;i++) PyList_SET_ITEM(yy,i,Py_BuildValue("i",y[i]));
@@ -155,7 +155,25 @@ PyObject *getEmbedSequence(PyObject **self, PyObject *args, PyObject* keywds){
 	//return Py_BuildValue("i",1);
 }
 
-
+#if PY_MAJOR_VERSION >= 3
+PyMODINIT_FUNC PyInit_sequence(void){
+	static PyMethodDef methods[]={
+		{"mls", (PyCFunction)py_mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
+		{"ccc", (PyCFunction)py_ccc, METH_VARARGS|METH_KEYWORDS , CCC__DOC__},
+		{"getBaseSequence" , (PyCFunction)getBaseSequence , METH_VARARGS|METH_KEYWORDS , GETBASESEQUENCE__DOC__},
+		{"getEmbedSequence", (PyCFunction)getEmbedSequence, METH_VARARGS|METH_KEYWORDS , GETEMBEDSEQUENCE__DOC__},
+		{NULL, NULL} /* sentinel */
+	};
+	static struct PyModuleDef cmodule = {
+		PyModuleDef_HEAD_INIT,
+		"sequence",     /* name of module */
+		"my functions for steganography\n", /* module documentation, may be NULL */
+		-1,      /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+		methods
+	};
+	return PyModule_Create(&cmodule);
+}
+#else
 void initsequence(void){
 	static PyMethodDef methods[]={
 		{"mls", (PyCFunction)py_mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
@@ -166,3 +184,4 @@ void initsequence(void){
 	};
 	Py_InitModule3("sequence", methods, "my functions for steganography\n");
 }
+#endif

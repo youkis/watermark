@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-int innerPro(char *x,char *y,size_t n,int t){
+int innerPro(char *x,char *y,int n,int t){
 	int ret=0,i;
 	for(i=0;i<n;i++)ret+=x[i]*y[(i+t)%n];
 	return ret;
@@ -71,7 +71,8 @@ char **mls(unsigned n,unsigned *mls_size,char is_full){
 
 char **preferd(unsigned n, unsigned *pref_size){
 	unsigned N=1<<n;
-	int i,j,k;
+	unsigned i,j,k;
+	int l;
 	unsigned mls_size=0;
 	char **m=mls(n,&mls_size,1);
 	int mini_val1=-1;
@@ -104,7 +105,7 @@ char **preferd(unsigned n, unsigned *pref_size){
 		for(i=pair[depth]+1;i<mls_size;i++){
 			if(mat[pair[depth]][i]){
 				int flag=1;
-				for(j=depth-1;j>=0;j--)
+				for(l=depth-1;l>=0;l--)
 					if(mat[pair[j]][i]!=1){
 						flag=0;
 						break;
