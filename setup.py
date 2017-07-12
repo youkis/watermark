@@ -9,7 +9,7 @@ setup(
     description= 'This is a package involves my functions',
     package_dir = {'watermark':''},
     packages = ['watermark'],
-    py_modules = ['src.myfunction'],
+    py_modules = ['watermark.src.myfunction'],
     ext_modules= [
         Extension('watermark.sequence',['src/sequence.c'],extra_objects = [])#,include_dirs=[]+get_numpy_include_dirs())
     ]
