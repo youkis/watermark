@@ -66,7 +66,7 @@ PyObject *py_mls(PyObject *self, PyObject *args, PyObject* keywds) {
 	free(*m);
 	free(m);
 
-	if(mls_size==1) return PyList_GET_ITEM(mseqs,0);
+	if(mls_size==1 && create[0]=='o') return PyList_GET_ITEM(mseqs,0);
 	return mseqs;
 }
 
