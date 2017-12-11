@@ -4,7 +4,7 @@ PythonのC拡張モジュールAPIで書かれた、電子透かしに用いる�
 
 ## Requirement
 linux, MacOS, windows?  
-numpy必要 相互相関のためのcorrelate関数だけはnumpyの関数に渡してるだけなので...  
+numpyが必要  
 環境によってはヘッダーファイルのためにpython-devが必要な場合もあり
 
 ## Install
@@ -22,8 +22,7 @@ $ sudo python setup.py install
 
 インストールせず、watermarkフォルダをおいたディレクトリのみで利用する場合、
 ```bash
-$ vim setup.cfg # ファイル内のコメントを外す
-$ python setup.py build
+$ python setup.py build_ext --inplace
 ```
 
 ## Usage
@@ -32,9 +31,9 @@ $ python setup.py build
 >>> from watermark import *
 ```
 
-### mls(N,create='one') ###
-+   `N` :
-    degree of polynomial under GF(2). mls length correspond to 2**N-1
+### mls(n,create='one') ###
++   `n` :
+    degree of polynomial under GF(2). mls length correspond to 2**n-1
 +   `create` :
     generate 'one' or 'full' or 'preferd' pair MLS
 +   `Returns one or full or preferd pair of Maximum Length Sequences`
@@ -61,13 +60,11 @@ $ python setup.py build
     A CCC chanel to use (1<=ch<=N)
 +   `Returns base sequence`
 
-### getEmbedSequence(base,data,N,shift) ###
+### getEmbedSequence(base,data,shift) ###
 +   `base` :
     base sequence
 +   `data` :
     bit list data such as [1,0,0,0,1,1].
-+   `N` :
-    CCC size.
 +   `shift` :
     the shift value when the base sequence is convoluted. [tip]
 +   `Returns embed sequence.`
@@ -98,7 +95,6 @@ array([ 0,  0, -4, 16, -4,  0,  0,  4, -8,  4, -4,  0, -4,  4, -8,  4])
 >>> extract=np.argmax(correlate(y,exmls))
 >>> extract
 13
->>> np.frombuffer(format(extract,'b'),'b')-ord('0')
 >>> np.frombuffer(format(extract,'b').encode('utf-8'),'b')-ord('0')
 array([1, 1, 0, 1], dtype=int8)
 >>> d
@@ -159,10 +155,10 @@ array([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1])
 >>> d=[1,0,1,1,0,1,1,0]
 >>> datasize=len(d)
 >>> s=getBaseSequence(ccc(N),datasize,shift)
->>> y=getEmbedSequence(s,d,N,shift)
+>>> y=getEmbedSequence(s,d,shift)
 >>> 
 >>> #extract
->>> tmp=np.correlate(y,s,'full')[len(s)-1:]
+>>> tmp=np.correlate(y,s,'valid')
 >>> impulses=tmp[:datasize*shift:shift]
 >>> impulses
 array([ 64, -64,  64,  64, -64,  64,  64, -64])

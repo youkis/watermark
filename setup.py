@@ -1,5 +1,5 @@
 from distutils.core import setup, Extension
-#from numpy.distutils.misc_util import get_numpy_include_dirs
+import numpy as np
 
 setup(
     name= 'watermark',
@@ -11,6 +11,6 @@ setup(
     packages = ['watermark'],
     py_modules = ['watermark.src.myfunction'],
     ext_modules= [
-        Extension('watermark.sequence',['src/sequence.c'],extra_objects = [])#,include_dirs=[]+get_numpy_include_dirs())
+        Extension('watermark.sequence',['src/sequence.c'],extra_objects = [],include_dirs = [np.get_include()])
     ]
 )

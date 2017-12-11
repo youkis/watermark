@@ -26,7 +26,8 @@ THE SOFTWARE.
 #include <stdlib.h>
 #include "ccc.h"
 #include "mls.h"
-//#include <numpy/arrayobject.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#include <numpy/arrayobject.h>
 
 #define MLS__DOC__ ""\
 "mls(N,create='one'):\n" \
@@ -41,7 +42,6 @@ PyObject *py_mls(PyObject *self, PyObject *args, PyObject* keywds) {
 	unsigned mls_size=0;
 	char **m;
 	unsigned N;
-	unsigned i,j;
 	PyObject *mseqs;
 
 	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|s",kwlist,&n,&create)) return NULL;
@@ -54,19 +54,15 @@ PyObject *py_mls(PyObject *self, PyObject *args, PyObject* keywds) {
 	else if(create[0]=='f') m=mls(n,&mls_size,1);
 	else m=preferd(n,&mls_size);
 
-	mseqs=PyList_New(mls_size);
 	N=1<<n;
-
-	for(i=0;i<mls_size;i++){
-		PyObject *mseq=PyList_New(N-1);
-		for(j=0;j<N-1;j++) PyList_SET_ITEM(mseq,j,Py_BuildValue("i",m[i][j]));
-		PyList_SET_ITEM(mseqs,i,mseq);
+	if(mls_size==1 && create[0]=='o'){
+		npy_intp dims[]={N-1};
+		mseqs=PyArray_SimpleNewFromData(1, dims, NPY_INT8, *m);
+	}else{
+		npy_intp dims[]={mls_size,N-1};
+		mseqs=PyArray_SimpleNewFromData(2, dims, NPY_INT8, *m);
 	}
-
-	free(*m);
 	free(m);
-
-	if(mls_size==1 && create[0]=='o') return PyList_GET_ITEM(mseqs,0);
 	return mseqs;
 }
 
@@ -76,93 +72,25 @@ PyObject *py_mls(PyObject *self, PyObject *args, PyObject* keywds) {
 "seed:   random seed number\n" \
 "Returns CCC, which is three dimensional list \n"
 PyObject *py_ccc(PyObject *self, PyObject *args, PyObject* keywds) {
-	int seed=123456,N;
-	int i,j,k;
+	int seed=1234,N;
 	static char* kwlist[] = {"N","seed",NULL};
 	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|i",kwlist,&N,&seed)) return NULL;
 	char ***CCC=generateCCC(seed,N);
-	PyObject *ccc=PyList_New(N);
-	for(i=0;i<N;i++){
-		PyObject *cc=PyList_New(N);
-		for(j=0;j<N;j++){
-			PyObject *c=PyList_New(N*N);
-			for(k=0;k<N*N;k++) PyList_SET_ITEM(c,k,Py_BuildValue("i",CCC[i][j][k]));
-			PyList_SET_ITEM(cc,j,c);
-		}
-		PyList_SET_ITEM(ccc,i,cc);
-	}
-	free(**CCC);
+	npy_intp dims[]= {N,N,N*N};
+	PyObject *ccc=PyArray_SimpleNewFromData(3, dims, NPY_INT8, **CCC);
 	free(*CCC);
 	free(CCC);
 	return ccc;
 }
 
-#define GETBASESEQUENCE__DOC__ ""\
-"getBaseSequence(CCC,datasize,shift,ch):\n" \
-"CCC:      CCC(N,N,N**2)\n" \
-"datasize: data size [bit]\n" \
-"shift:    shift size when you're gonna make embed sequence [tip]\n" \
-"ch:       CCC chanel to use (1-N)\n" \
-"Returns base sequence \n"
-PyObject *getBaseSequence(PyObject **self, PyObject *args, PyObject* keywds){
-	static char* kwlist[] = {"CCC","datasize","shift","ch",NULL};
-	PyObject *ccc;
-	int ch=1,shift,datasize;
-	if(!PyArg_ParseTupleAndKeywords(args,keywds,"Oii|i",kwlist,&ccc,&datasize,&shift,&ch)) return NULL;
-	unsigned N=PyList_GET_SIZE(ccc);
-	unsigned zero=shift*(datasize-1);//ゼロ埋めの数
-	unsigned i;
-	PyObject *s=PyList_New(0),*tmp=PyList_New(1),*z;
-	PyList_SET_ITEM(tmp,0,Py_BuildValue("i",0));
-	z=PyNumber_Multiply(tmp,Py_BuildValue("i",zero));
-	for(i=0;i<N;i++){
-		PyNumber_InPlaceAdd(s,PyList_GET_ITEM(PyList_GET_ITEM(ccc,ch-1),i));
-		if(i!=N) PyNumber_InPlaceAdd(s,z);
-	}
-	return s;
-}
-#define GETEMBEDSEQUENCE__DOC__ ""\
-"getEmbedSequence(base,data,N,shift):\n" \
-"base:   base sequence\n" \
-"data:   bit list data such as [1,0,0,0,1,1].\n" \
-"N:      CCC size.\n" \
-"shift:  the shift value when the base sequence is convoluted. [tip]\n" \
-"Returns embed sequence.\n"
-PyObject *getEmbedSequence(PyObject **self, PyObject *args, PyObject* keywds){
-	static char* kwlist[] = {"base","data","N","shift",NULL};
-	PyObject *s,*d;
-	unsigned shift,N;
-	if(!PyArg_ParseTupleAndKeywords(args,keywds,"OOii",kwlist,&s,&d,&N,&shift)) return NULL;
-	unsigned datasize=PyList_GET_SIZE(d);
-	unsigned zero=shift*(datasize-1);//ゼロ埋めの数
-	unsigned n=N*N*N+zero*(N-1); //基礎系列sの長さ 最後のゼロ埋めは不要
-	unsigned NN=N*N;
-	int *y=(int *)calloc(n+zero,sizeof(int)); //埋め込み系列
-	PyObject *yy=PyList_New((int)(n+zero)); //埋め込み系列 pylist
-	unsigned i,j,k;
-	for(i=0;i<datasize;i++){
-		int *yit=y+i*shift;
-		int di=PyLong_AsLong(PyList_GET_ITEM(d,i))*2-1;
-		for(j=0;j<N;j++){
-			int jNz=j*(NN+zero);
-			for(k=jNz;k<jNz+NN;k++) yit[k]+=di*PyLong_AsLong(PyList_GET_ITEM(s,k));
-		}
-	}
-	for(i=0;i<n+zero;i++) PyList_SET_ITEM(yy,i,Py_BuildValue("i",y[i]));
-	free(y);
-	return yy;
-	//return Py_BuildValue("i",1);
-}
-
 static PyMethodDef methods[]={
 	{"mls", (PyCFunction)py_mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
 	{"ccc", (PyCFunction)py_ccc, METH_VARARGS|METH_KEYWORDS , CCC__DOC__},
-	{"getBaseSequence" , (PyCFunction)getBaseSequence , METH_VARARGS|METH_KEYWORDS , GETBASESEQUENCE__DOC__},
-	{"getEmbedSequence", (PyCFunction)getEmbedSequence, METH_VARARGS|METH_KEYWORDS , GETEMBEDSEQUENCE__DOC__},
 	{NULL, NULL} /* sentinel */
 };
 #if PY_MAJOR_VERSION >= 3
 PyMODINIT_FUNC PyInit_sequence(void){
+	import_array();
 	static struct PyModuleDef cmodule={
 		PyModuleDef_HEAD_INIT, "sequence","my functions for steganography\n", -1, methods
 	};
@@ -170,6 +98,7 @@ PyMODINIT_FUNC PyInit_sequence(void){
 }
 #else
 void initsequence(void){
+	import_array();
 	Py_InitModule3("sequence", methods, "my functions for steganography\n");
 }
 #endif

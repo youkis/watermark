@@ -39,8 +39,7 @@ char ***generateCCC(int seed,unsigned N){
 		tr+=r[i];
 	}
 	if((unsigned)tr==N || tr==-(int)N){//乱数が全て1もしくは全て-1になり等価なアダマール行列が生成されちゃう
-		fprintf(stderr,"ERROR: invalid seednumber.\n");
-		exit(-1);
+		r[0]=-r[0];
 	}
 	//アダマール行列生成
 	for(i=0;i<N;i++)
