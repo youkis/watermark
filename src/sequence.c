@@ -83,9 +83,29 @@ PyObject *py_ccc(PyObject *self, PyObject *args, PyObject* keywds) {
 	return ccc;
 }
 
+#define PERM__DOC__ ""\
+"permutation(size,seed=123):\n" \
+"size:   array size\n" \
+"seed:   random seed number\n" \
+"forword: returns permutation array or its inverse\n" \
+"Returns random permutation array \n"
+PyObject *py_permutation(PyObject *self, PyObject *args, PyObject* keywds) {
+	unsigned size;
+  unsigned seed=123;
+	static char* kwlist[] = {"size","forward","seed",NULL};
+	int forward=1;
+
+	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|ii",kwlist,&size,&forward,&seed)) return NULL;
+
+	npy_intp dims[]={size};
+	if(forward) return PyArray_SimpleNewFromData(1, dims, NPY_UINT, permutation(size,seed));
+	else        return PyArray_SimpleNewFromData(1, dims, NPY_UINT, invpermutation(size,seed));
+}
+
 static PyMethodDef methods[]={
 	{"mls", (PyCFunction)py_mls, METH_VARARGS|METH_KEYWORDS , MLS__DOC__},
 	{"ccc", (PyCFunction)py_ccc, METH_VARARGS|METH_KEYWORDS , CCC__DOC__},
+	{"permutation", (PyCFunction)py_permutation, METH_VARARGS|METH_KEYWORDS , PERM__DOC__},
 	{NULL, NULL} /* sentinel */
 };
 #if PY_MAJOR_VERSION >= 3

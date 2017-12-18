@@ -69,6 +69,14 @@ $ python setup.py build_ext --inplace
     the shift value when the base sequence is convoluted. [tip]
 +   `Returns embed sequence.`
 
+### permutation(size,forward=1,seed=123) ###
++   `size` :
+    permutation array size
++   `forward` :
+    make a permutation array (forward=1) or its inverse array
++   `seed` :
+    random seed for permutation array
++   `Returns embed sequence.`
 
 ## Demo (Memo?)
 ### M系列による埋め込み、抽出 ずらし編 ###

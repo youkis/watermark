@@ -128,3 +128,25 @@ char **preferd(unsigned n, unsigned *pref_size){
 	return prefm;
 }
 
+unsigned *permutation(int size,int seed){
+	unsigned *array=malloc(sizeof(unsigned)*size);
+	for(int i=0;i<size;i++) array[i]=i;
+	srand(seed);
+	for(int i=0;i<size;i++){
+		int r1=rand()%size;
+		int r2=rand()%size;
+		int tmp=array[r1];
+		array[r1]=array[r2];
+		array[r2]=tmp;
+	}
+	return array;
+}
+
+unsigned *invpermutation(int size,int seed){
+	unsigned *perm=permutation(size,seed);
+	unsigned *array=malloc(sizeof(unsigned)*size);
+	for(int i=0;i<size;i++) array[perm[i]]=i;
+	free(perm);
+	return array;
+}
+
