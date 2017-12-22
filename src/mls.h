@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-int innerPro(char *x,char *y,int n,int t){
+int innerPro(int *x,int *y,int n,int t){
 	int ret=0,i;
 	for(i=0;i<n;i++)ret+=x[i]*y[(i+t)%n];
 	return ret;
@@ -21,16 +21,16 @@ unsigned mul(unsigned a,unsigned b){
 // n: 次数
 // mls_size: 算出したmlsの個数を返す
 // is_full: 1で全てのmlsを算出 0で1本のみ
-char **mls(unsigned n,unsigned *mls_size,char is_full){
+int **mls(unsigned n,unsigned *mls_size,char is_full){
 	unsigned i,j,k;
 	unsigned N2=1<<(n+1);  // N2未満の既約多項式を求める
 	unsigned N=1<<n;
-	char *flag=(char *)malloc(sizeof(char)*N2);
+	char *flag=malloc(sizeof(char)*N2);
 	unsigned irr_num=0;//既約多項式の数(数学的にはメビウス関数を用いて表せる)
 	unsigned mls_num=0;//m系列の数
 	unsigned *irr;     //既約多項式配列
-	char **mseqes; //m系列用二次元配列
-	char *mp; //2次元配列獲得用pointer
+	int **mseqes; //m系列用二次元配列
+	int *mp; //2次元配列獲得用pointer
 
 	// 既約多項式の配列irrを篩アルゴリズムで作成
 	for(i=1;i<N2;i++) flag[i]=1;  // 全ての数に1を立てる
@@ -46,14 +46,14 @@ char **mls(unsigned n,unsigned *mls_size,char is_full){
 	free(flag);
 
 	//既約多項式からM系列生成
-	mp=(char*)malloc(sizeof(char)*irr_num*(N-1));
+	mp=malloc(sizeof(int)*irr_num*(N-1));
 	for(i=0;i<irr_num;i++){// fが原始多項式であるからfからM系列を求める
 		unsigned f=irr[i]>>1;
 		unsigned lfsr=1;
-		char *tmp=mp+mls_num*(N-1);
+		int *tmp=mp+mls_num*(N-1);
 		for(k=0;k<N-1;k++){ //ガロア線形シフトレジスタ
 			lfsr=(lfsr>>1)^(-(lfsr&1) & f);
-			tmp[k]=lfsr&1?1:-1;
+			tmp[k]=(lfsr&1)?1:-1;
 			if(lfsr==1) break;
 		}
 		if(k==N-2){
@@ -61,26 +61,26 @@ char **mls(unsigned n,unsigned *mls_size,char is_full){
 			if(!is_full) break;
 		}
 	}
-	mp=(char*)realloc(mp,mls_num*(N-1));
-	mseqes=(char**)malloc(sizeof(char*)*mls_num);
+	mp=realloc(mp,sizeof(int)*mls_num*(N-1));
+	mseqes=malloc(sizeof(int*)*mls_num);
 	for(i=0;i<mls_num;i++) mseqes[i]=mp+i*(N-1); //mpにpointing
 	free(irr);
 	*mls_size=mls_num;
 	return mseqes;
 }
 
-char **preferd(unsigned n, unsigned *pref_size){
+int **preferd(unsigned n, unsigned *pref_size){
 	unsigned N=1<<n;
 	unsigned i,j,k;
 	int l;
 	unsigned mls_size=0;
-	char **m=mls(n,&mls_size,1);
+	int **m=mls(n,&mls_size,1);
 	int mini_val1=-1;
 	int mini_val2=-1+(1<<((n+2)/2)); //プリファードペアが取るべき3つの小さい値
 	int mini_val3=-1-(1<<((n+2)/2));
 	char mat[mls_size][mls_size];
 	unsigned pair[mls_size+1],depth=0,pdepth=1;
-	char **prefm,*prefmp;
+	int **prefm,*prefmp;
 
 	// 行列作成 要素が1である添字同士がプリファードペア
 	for(i=0;i<mls_size;i++){
@@ -115,8 +115,8 @@ char **preferd(unsigned n, unsigned *pref_size){
 		}
 	}
 	*pref_size=depth+1;
-	prefm=(char**)malloc(sizeof(char*)*(*pref_size));
-	prefmp=(char*)malloc(sizeof(char)*(*pref_size)*(N-1));
+	prefm=malloc(sizeof(int*)*(*pref_size));
+	prefmp=malloc(sizeof(int)*(*pref_size)*(N-1));
 
 	for(i=0;i<depth+1;i++){
 		prefm[i]=prefmp+i*(N-1);

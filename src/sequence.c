@@ -40,7 +40,7 @@ PyObject *py_mls(PyObject *self, PyObject *args, PyObject* keywds) {
   char* create="one";
 	static char* kwlist[] = {"N","create",NULL};
 	unsigned mls_size=0;
-	char **m;
+	int **m;
 	unsigned N;
 	PyObject *mseqs;
 
@@ -57,10 +57,10 @@ PyObject *py_mls(PyObject *self, PyObject *args, PyObject* keywds) {
 	N=1<<n;
 	if(mls_size==1 && create[0]=='o'){
 		npy_intp dims[]={N-1};
-		mseqs=PyArray_SimpleNewFromData(1, dims, NPY_INT8, *m);
+		mseqs=PyArray_SimpleNewFromData(1, dims, NPY_INT, *m);
 	}else{
 		npy_intp dims[]={mls_size,N-1};
-		mseqs=PyArray_SimpleNewFromData(2, dims, NPY_INT8, *m);
+		mseqs=PyArray_SimpleNewFromData(2, dims, NPY_INT, *m);
 	}
 	free(m);
 	return mseqs;
@@ -75,9 +75,9 @@ PyObject *py_ccc(PyObject *self, PyObject *args, PyObject* keywds) {
 	int seed=1234,N;
 	static char* kwlist[] = {"N","seed",NULL};
 	if(!PyArg_ParseTupleAndKeywords(args,keywds,"i|i",kwlist,&N,&seed)) return NULL;
-	char ***CCC=generateCCC(seed,N);
+	int ***CCC=generateCCC(seed,N);
 	npy_intp dims[]= {N,N,N*N};
-	PyObject *ccc=PyArray_SimpleNewFromData(3, dims, NPY_INT8, **CCC);
+	PyObject *ccc=PyArray_SimpleNewFromData(3, dims, NPY_INT, **CCC);
 	free(*CCC);
 	free(CCC);
 	return ccc;

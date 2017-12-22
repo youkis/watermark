@@ -3,7 +3,7 @@ watermark
 PythonのC拡張モジュールAPIで書かれた、電子透かしに用いる関数ライブラリ
 
 ## Requirement
-linux, MacOS, windows?  
+linux, MacOS (windowsは不明)  
 numpyが必要  
 環境によってはヘッダーファイルのためにpython-devが必要な場合もあり
 
@@ -55,7 +55,7 @@ $ python setup.py build_ext --inplace
 +   `datasize` :
     data size [bit]
 +   `shift` :
-    shift size when you're gonna make embed sequence [tip]
+    shift size when you're gonna make embed sequence [chip]
 +   `ch` :
     A CCC chanel to use (1<=ch<=N)
 +   `Returns base sequence`
@@ -66,7 +66,7 @@ $ python setup.py build_ext --inplace
 +   `data` :
     bit list data such as [1,0,0,0,1,1].
 +   `shift` :
-    the shift value when the base sequence is convoluted. [tip]
+    the shift value when the base sequence is convoluted. [chip]
 +   `Returns embed sequence.`
 
 ### permutation(size,forward=1,seed=123) ###
@@ -78,7 +78,7 @@ $ python setup.py build_ext --inplace
     random seed for permutation array
 +   `Returns embed sequence.`
 
-## Demo (Memo?)
+## Memo
 ### M系列による埋め込み、抽出 ずらし編 ###
 ```Python
 >>> from watermark import *
