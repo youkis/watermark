@@ -3,10 +3,11 @@
 #include<stdlib.h>
 
 /* 変数の1であるbitの数を調べる */
-int countBit(int bits){
-  int count=0;
-  for(;bits!=0;bits&=bits-1) count++;
-  return count;
+int popcount(int bits){
+    bits = (bits & 0x5555) + (bits >> 1 & 0x5555);
+    bits = (bits & 0x3333) + (bits >> 2 & 0x3333);
+    bits = (bits & 0x0f0f) + (bits >> 4 & 0x0f0f);
+    return (bits & 0x00ff) + (bits >> 8 & 0x00ff);
 }
 /* CCC(N,N,N^2)を生成する {{{
  * seed:   アダマール行列生成用の乱数シード値
@@ -23,11 +24,11 @@ int ***generateCCC(int seed,unsigned N){
 	}
 
 	// メモリ確保
-	H=malloc(sizeof(char*)*N);
-	*H=malloc(sizeof(char)*N*N);
-	CCC=malloc(sizeof(int**)*N);
-	*CCC=malloc(sizeof(int*)*N*N);
-	**CCC=malloc(sizeof(int)*N*N*N*N);
+	H=(char**)malloc(sizeof(char*)*N);
+	*H=(char*)malloc(sizeof(char)*N*N);
+	CCC=(int***)malloc(sizeof(int**)*N);
+	*CCC=(int**)malloc(sizeof(int*)*N*N);
+	**CCC=(int*)malloc(sizeof(int)*N*N*N*N);
 	for(i=0;i<N;i++){
 		CCC[i]=*CCC+i*N;
 		H[i]=*H+i*N;
@@ -46,7 +47,7 @@ int ***generateCCC(int seed,unsigned N){
 	//アダマール行列生成
 	for(i=0;i<N;i++)
 		for(j=i;j<N;j++){
-			H[i][j]=1-countBit(i&j)%2*2;
+			H[i][j]=1-popcount(i&j)%2*2;
 			H[j][i]=H[i][j]; //対称行列
 		}
 	/* HからCCCを作成 */

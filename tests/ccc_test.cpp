@@ -14,12 +14,12 @@
 
 using namespace std;
 
-int innerPro(int *x,char *Si,size_t n){
+int innerPro(int *x,int *Si,size_t n){
 	int ret=0;
 	for(int i=0;i<n;i++)ret+=x[i]*Si[i];
 	return ret;
 }
-char dice(){//+-1生成器
+int dice(){//+-1生成器
 	return rand()%2*2-1;
 }
 int gauss(){
@@ -41,9 +41,9 @@ double dispersion(int *x,size_t n){
 int main(){
 	size_t zero=T*(DataSize-1);//ゼロ埋めの数
 	size_t n=N*N*N+zero*(N-1);                      //基礎系列sの長さ 最後のゼロ埋めは不要
-	char  ***CCC=generateCCC(123456,N),
-	      *s=generateBaseSequence(CCC,1,T,DataSize,N),//基礎系列 callocで0クリア
-	      *d=(char *)malloc(sizeof(char)*DataSize); //埋め込むデータ
+	int ***CCC=generateCCC(123456,N),
+	        *s=generateBaseSequence(CCC,1,T,DataSize,N),//基礎系列 callocで0クリア
+	        *d=(int *)malloc(sizeof(int)*DataSize); //埋め込むデータ
 	for(int i=0;i<n;i++) printf("%2d,",s[i]);       cout<<"\b \n";
 	//埋め込みデータを乱数生成
 	srand((unsigned)time(NULL));
