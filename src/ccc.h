@@ -4,10 +4,11 @@
 
 /* 変数の1であるbitの数を調べる */
 int popcount(int bits){
-    bits = (bits & 0x5555) + (bits >> 1 & 0x5555);
-    bits = (bits & 0x3333) + (bits >> 2 & 0x3333);
-    bits = (bits & 0x0f0f) + (bits >> 4 & 0x0f0f);
-    return (bits & 0x00ff) + (bits >> 8 & 0x00ff);
+    bits = (bits & 0x55555555) + (bits >> 1 & 0x55555555);
+    bits = (bits & 0x33333333) + (bits >> 2 & 0x33333333);
+    bits = (bits & 0x0f0f0f0f) + (bits >> 4 & 0x0f0f0f0f);
+    bits = (bits & 0x00ff00ff) + (bits >> 8 & 0x00ff00ff);
+    return (bits & 0x0000ffff) + (bits >>16 & 0x0000ffff);
 }
 /* CCC(N,N,N^2)を生成する {{{
  * seed:   アダマール行列生成用の乱数シード値
