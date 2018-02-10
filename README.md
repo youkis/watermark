@@ -1,7 +1,7 @@
 watermark
 ====
 PythonのC拡張モジュールAPIで書かれた、電子透かしに用いる関数ライブラリ  
-[直接拡散に使えるPN符号](https://github.com/youkis/watermark)の生成
+[直接拡散に使えるPN符号](https://qiita.com/youkis/private/07480025f1348303dec8)の生成
 
 ## Requirement
 linux, MacOS (windowsは不明)  
