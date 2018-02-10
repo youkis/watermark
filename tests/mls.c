@@ -2,14 +2,15 @@
 
 int main(){
 	unsigned mls_size;
-	unsigned n=7,N=1<<n;
+	unsigned n=5,N=1<<n;
 	unsigned i,j;
-	char **m=mls(n,&mls_size,1);
-	for(i=0;i<mls_size;i++){
-		printf("%2d: ",i);
-		for(j=0;j<N-1;j++) printf("%d,",innerPro(m[i],m[i],N-1,j));
-		printf("\n");
-	}
+	//int **m=mls(n,&mls_size,1);
+	int **m=preferd(n,&mls_size);
+	printf("size:%d\n",mls_size);
+	for(j=0;j<N-1;j++) printf("%d,",m[0][j]);
+	printf("\n");
+	printf("\n");
+	for(j=0;j<N-1;j++) printf("%d,",innerPro(m[0],m[1],N-1,j));
 	free(*m);
 	free(m);
 	return 0;

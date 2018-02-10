@@ -13,7 +13,7 @@ def test():
     d=[1,0,1,1,0,1,1,0]
     datasize=len(d)
     s=getBaseSequence(ccc(N),datasize,shift)
-    y=getEmbedSequence(s,d,N,shift)
+    y=getEmbedSequence(s,d,shift)
     
     tmp=np.correlate(y,s,'full')[len(s)-1:]
     impulses=tmp[:datasize*shift:shift]
@@ -50,3 +50,4 @@ def test():
     if((recieve!=b).sum()==0): print('mls 2st OK')
     
     
+test()
